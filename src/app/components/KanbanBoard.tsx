@@ -26,6 +26,10 @@ function KanbanBoard() {
     const savedTasks = localStorage.getItem(STORAGE_KEY_TASKS);
     if (savedColumns) setColumns(JSON.parse(savedColumns));
     if (savedTasks) setTasks(JSON.parse(savedTasks));
+    return () => {
+      localStorage.removeItem(STORAGE_KEY_COLUMNS);
+      localStorage.removeItem(STORAGE_KEY_TASKS);
+    };
   }, []);
 
   useEffect(() => {
