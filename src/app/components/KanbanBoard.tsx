@@ -93,7 +93,7 @@ function KanbanBoard() {
   };
 
   if (!isMounted) {
-    return <div>로딩...</div>;
+    return <div>로딩중...</div>;
   }
 
   return (
