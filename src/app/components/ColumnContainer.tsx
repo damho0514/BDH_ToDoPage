@@ -125,7 +125,7 @@ function ColumnContainer({
         }}
         className="flex gap-2 items-center  border-columBackgroundColor border-2 rounded-md p-4 border-x-columBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
       >
-        <PlusIcon /> Add Task
+        <PlusIcon /> 할일 추가
       </button>
     </div>
   );

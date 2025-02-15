@@ -16,22 +16,29 @@ import {
 } from "../constants/kanbanbordKey";
 
 function KanbanBoard() {
-  const [columns, setColumns] = useState<Column[]>(() => {
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
     const savedColumns = localStorage.getItem(STORAGE_KEY_COLUMNS);
-    return savedColumns ? JSON.parse(savedColumns) : [];
-  });
-  const [tasks, setTasks] = useState<Task[]>(() => {
     const savedTasks = localStorage.getItem(STORAGE_KEY_TASKS);
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
+    if (savedColumns) setColumns(JSON.parse(savedColumns));
+    if (savedTasks) setTasks(JSON.parse(savedTasks));
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_COLUMNS, JSON.stringify(columns));
-  }, [columns]);
+    if (isMounted) {
+      localStorage.setItem(STORAGE_KEY_COLUMNS, JSON.stringify(columns));
+    }
+  }, [columns, isMounted]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks));
-  }, [tasks]);
+    if (isMounted) {
+      localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks));
+    }
+  }, [tasks, isMounted]);
 
   const {
     columnActive,
@@ -50,10 +57,7 @@ function KanbanBoard() {
   const columnsId = columns.map((col) => col.id);
 
   const handleTitleEditChange = (id: Id, title: string) => {
-    const newColumns = columns.map((col) =>
-      col.id === id ? { ...col, title } : col
-    );
-    setColumns(newColumns);
+    setColumns(columns.map((col) => (col.id === id ? { ...col, title } : col)));
   };
 
   const createTask = (columnId: Id) => {
@@ -88,6 +92,10 @@ function KanbanBoard() {
     setColumns([...columns, columnToAdd]);
   };
 
+  if (!isMounted) {
+    return <div>로딩...</div>;
+  }
+
   return (
     <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-auto px-[40px] justify-center">
       <DndContext
@@ -118,7 +126,7 @@ function KanbanBoard() {
             className="h-[60px] w-[350px] min-w-[350px] cursor-pointer rounded-md bg-mainBackgroundColor border-2 border-columBackgroundColor p-4 riging-roes-500 hover:ring-2 flex gap-2"
           >
             <PlusIcon />
-            추가
+            보드 추가
           </button>
         </div>
         {typeof window !== "undefined" &&
